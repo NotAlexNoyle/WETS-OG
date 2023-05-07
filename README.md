@@ -2,6 +2,8 @@
 
 A fork of [WETS](https://github.com/emilyy-dev/wets) **without Fabric support** maintained for [TrueOG](https://true-og.net/).
 
+The default blocks per tick is 100.
+
 Spreads WorldEdit operations across multiple ticks.
 
 Semi-configurable, single command `/wets` (`/worldedit-tick-spreader`), one permission (`wets`), two possible arguments:
