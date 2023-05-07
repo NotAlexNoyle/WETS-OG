@@ -51,7 +51,7 @@ public final class WESpread {
   private final Scheduler scheduler;
   private final Object2LongMap<UUID> blocksPerTickMap = new Object2LongOpenHashMap<>();
   private final Set<UUID> actorsWhosePlacementIsNotSorted = new HashSet<>();
-  private long defaultBlocksPerTick = 1;
+  private long defaultBlocksPerTick = 100;
 
   public WESpread(final Scheduler scheduler) {
     this.scheduler = scheduler;
@@ -109,7 +109,7 @@ public final class WESpread {
     try {
       long blocksPerTick = Long.parseLong(arg);
       if (blocksPerTick < 0) { blocksPerTick = Long.MAX_VALUE; }
-      this.blocksPerTickMap.put(id, blocksPerTick);
+      this.blocksPerTickMap.put(id, 100);
       source.print(COMMAND_BPT_UPDATED);
     } catch (final NumberFormatException exception) {
       source.print(INVALID_ARGUMENT);
