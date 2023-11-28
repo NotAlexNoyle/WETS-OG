@@ -4,6 +4,7 @@ plugins {
 
 subprojects {
   apply(plugin = "java")
+  apply(plugin = "eclipse")
 
   extensions.configure<JavaPluginExtension>("java") {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))

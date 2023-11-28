@@ -1,8 +1,9 @@
 package ar.emily.wets.bukkit;
 
-import ar.emily.wets.common.AbstractScheduler;
-import ar.emily.wets.common.WESpread;
-import com.sk89q.worldedit.bukkit.BukkitAdapter;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.event.EventHandler;
@@ -12,9 +13,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import com.sk89q.worldedit.bukkit.BukkitAdapter;
+
+import ar.emily.wets.common.AbstractScheduler;
+import ar.emily.wets.common.WESpread;
 
 public final class WESpreadPlugin extends JavaPlugin implements Listener {
 
