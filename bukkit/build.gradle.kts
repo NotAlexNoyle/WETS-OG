@@ -3,14 +3,14 @@ plugins {
 }
 
 repositories {
-  maven("https://repo.papermc.io/repository/maven-public/")
+  maven("https://repo.purpurmc.org/snapshots")
   maven("https://maven.enginehub.org/repo/")
 }
 
 dependencies {
   // this is all set up the wrong way around but shadowJar is special
-  implementation("io.papermc.paper:paper-api:1.19.4-R0.1-SNAPSHOT")
-  implementation("com.sk89q.worldedit:worldedit-bukkit:7.2.14")
+  compileOnly("org.purpurmc.purpur:purpur-api:1.19.4-R0.1-SNAPSHOT") 
+  implementation("com.sk89q.worldedit:worldedit-bukkit:7.2.14") 
   shadow(project(":wets-common")) { isTransitive = false }
 }
 
@@ -21,7 +21,8 @@ tasks {
     archiveClassifier.set("bukkit")
   }
 
-  assemble {
-    dependsOn(shadowJar)
-  }
+    assemble {
+        dependsOn(shadowJar)
+    }
 }
+

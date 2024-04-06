@@ -1,8 +1,8 @@
-name: WorldEditTickSpreader
+name: WETS-OG
 version: ${version}
-website: https://github.com/emilyy-dev/wets
+website: https://github.com/NotAlexNoyle/WETS-OG
 main: ar.emily.wets.bukkit.WESpreadPlugin
-api-version: 1.13
+api-version: 1.19
 depend:
   - WorldEdit
 
