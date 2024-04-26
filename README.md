@@ -2,7 +2,7 @@
 
 A fork of [WETS](https://github.com/emilyy-dev/wets) **without Fabric support** maintained for [TrueOG](https://true-og.net/).
 
-The default blocks per tick is 100.
+Modified to build with TrueOG's standard gradle configuration for 1.19.4. The default blocks per tick is manually set to 100.
 
 Spreads WorldEdit operations across multiple ticks.
 
