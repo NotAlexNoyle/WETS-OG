@@ -4,5 +4,5 @@
 .settings/
 build
 run
-bukkit/.classpath
-common/.classpath
+.classpath
+bin/
