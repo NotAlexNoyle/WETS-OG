@@ -1,8 +1,14 @@
 ## WETS-OG
 
-A fork of [WETS](https://github.com/emilyy-dev/wets) **without Fabric support** maintained for [TrueOG](https://true-og.net/).
+A soft fork of [WETS](https://github.com/emilyy-dev/wets) maintained for [TrueOG](https://true-og.net/).
 
-Modified to build with TrueOG's standard gradle configuration for 1.19.4. The default blocks per tick is manually set to 100.
+**Changes:**
+
+- Changed API version to 1.19.4
+- Modified project structure to build with TrueOG's gradle configuration.
+- Messages are colored using MiniMessage.
+- Added a customizable prefix.
+- Added a customizable default blocks per tick (set to 100).
 
 Spreads WorldEdit operations across multiple ticks.
 

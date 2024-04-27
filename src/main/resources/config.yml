@@ -1,0 +1,4 @@
+# Set the chat prefix (using bukkit color codes).
+ChatPrefix: "&7[&eWETS&f-&4OG&7] "
+# Set the amount of blocks to update per tick (high values may cause lag).
+DefaultBlocksPerTick: 100

@@ -11,7 +11,7 @@ plugins {
 }
 
 group = "net.trueog.wets-og" // Declare bundle identifier.
-version = "1.1"
+version = "1.2"
 
 val apiVersion = "1.19"
 
@@ -42,7 +42,7 @@ repositories {
 dependencies {
     compileOnly("org.purpurmc.purpur:purpur-api:1.19.4-R0.1-SNAPSHOT")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.0")
-    implementation("com.sk89q.worldedit:worldedit-bukkit:7.3.0-SNAPSHOT") 
+    compileOnly("com.sk89q.worldedit:worldedit-bukkit:7.2.14") 
 }
 
 tasks.withType<AbstractArchiveTask>().configureEach {

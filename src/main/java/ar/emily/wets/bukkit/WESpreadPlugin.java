@@ -24,20 +24,21 @@ public final class WESpreadPlugin extends JavaPlugin implements Listener {
 					getServer()::getCurrentTick,
 					task -> getServer().getScheduler().runTaskTimer(this, task, 1L, 1L)
 					);
-	private final WESpread plugin = new WESpread(this.scheduler);
+	private final WESpread wetsSpread = new WESpread(this.scheduler);
 
 	@EventHandler
 	public void on(final PlayerQuitEvent event) {
-		this.plugin.playerLogout(event.getPlayer().getUniqueId());
+		this.wetsSpread.playerLogout(event.getPlayer().getUniqueId());
 	}
 
 	@Override
 	public void onLoad() {
-		this.plugin.load();
+		this.wetsSpread.load();
 	}
 
 	@Override
 	public void onEnable() {
+		saveDefaultConfig();
 		this.scheduler.setup();
 		getServer().getPluginManager().registerEvents(this, this);
 	}
@@ -49,7 +50,7 @@ public final class WESpreadPlugin extends JavaPlugin implements Listener {
 			final @NotNull String label,
 			final String @NotNull [] args
 			) {
-		this.plugin.command(BukkitAdapter.adapt(sender), Arrays.asList(args));
+		this.wetsSpread.command(BukkitAdapter.adapt(sender), Arrays.asList(args));
 		return true;
 	}
 

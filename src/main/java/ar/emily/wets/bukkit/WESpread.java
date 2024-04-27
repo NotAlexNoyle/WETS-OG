@@ -1,5 +1,7 @@
 package ar.emily.wets.bukkit;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,6 +13,9 @@ import java.util.UUID;
 import java.util.function.LongSupplier;
 import java.util.stream.Stream;
 
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.Nullable;
 
 import com.sk89q.worldedit.EditSession;
@@ -41,22 +46,37 @@ public final class WESpread {
 	public static final UUID NON_PLAYER_ACTOR_ID =
 			V5UUID.create(WESpread.class.descriptorString().getBytes(StandardCharsets.UTF_8));
 
-	// @formatter:off
-	private static final Component INVALID_ARGUMENT = TextComponent.of("Blocks per tick must be a valid positive number");
-	private static final Component COMMAND_USAGE = TextComponent.of("Usage: /wets (<blocks per tick> | sorted | not-sorted)");
-	private static final Component COMMAND_SORTED = TextComponent.of("Block placement of new operations will now be sorted");
-	private static final Component COMMAND_NOT_SORTED = TextComponent.of("Block placement of new operations will now be unsorted");
-	private static final Component COMMAND_BPT_UPDATED = TextComponent.of("Blocks per tick placement updated");
-	// @formatter:on
+	private AbstractScheduler scheduler;
 
-	private final Scheduler scheduler;
-	private final Object2LongMap<UUID> blocksPerTickMap = new Object2LongOpenHashMap<>();
-	private final Set<UUID> actorsWhosePlacementIsNotSorted = new HashSet<>();
-	private long defaultBlocksPerTick = 100;
+	File configFile = new File("plugins/WETS-OG/config.yml");
 
-	public WESpread(final Scheduler scheduler) {
+    public static FileConfiguration convertFileToConfig(File file) {
+        FileConfiguration config = YamlConfiguration.loadConfiguration(file); 
+
+        try {
+            config.load(file);
+        } catch (IOException | InvalidConfigurationException error) {
+            error.printStackTrace();
+        }
+
+        return config;
+    }
+
+	FileConfiguration configFileYAML = convertFileToConfig(configFile);
+
+	public WESpread(AbstractScheduler scheduler) {
 		this.scheduler = scheduler;
 	}
+
+	private final Component INVALID_ARGUMENT = TextComponent.of(Utils.legacySerializerAnyCase(Utils.legacySerializerAnyCase(configFileYAML.getString("ChatPrefix") + "&cERROR: Blocks per tick must be a valid positive number!")));
+	private final Component COMMAND_USAGE = TextComponent.of(Utils.legacySerializerAnyCase(configFileYAML.getString("ChatPrefix") + "&6Usage: &e/wets (<blocks per tick> | sorted | not-sorted)"));
+	private final Component COMMAND_SORTED = TextComponent.of(Utils.legacySerializerAnyCase(configFileYAML.getString("ChatPrefix") + "&6Block placement of new operations will now be &esorted&6."));
+	private final Component COMMAND_NOT_SORTED = TextComponent.of(Utils.legacySerializerAnyCase(configFileYAML.getString("ChatPrefix") + "&6Block placement of new operations will now be &eunsorted&6."));
+	private final Component COMMAND_BPT_UPDATED = TextComponent.of(Utils.legacySerializerAnyCase(configFileYAML.getString("ChatPrefix") + "&aBlocks per tick placement set to: "));
+
+	private final Object2LongMap<UUID> blocksPerTickMap = new Object2LongOpenHashMap<>();
+	private final Set<UUID> actorsWhosePlacementIsNotSorted = new HashSet<>();
+	private long defaultBlocksPerTick = configFileYAML.getInt("DefaultBlocksPerTick");
 
 	public void playerLogout(final UUID id) {
 		this.blocksPerTickMap.removeLong(id);
@@ -67,7 +87,7 @@ public final class WESpread {
 		WorldEdit.getInstance().getEventBus().register(this);
 	}
 
-	// we really really really want to flush the queue before worldedit itself unloads
+	// We really really really want to flush the queue before WorldEdit itself unloads.
 	@Subscribe(priority = EventHandler.Priority.VERY_EARLY)
 	public void on(final PlatformUnreadyEvent event) {
 		WorldEdit.getInstance().getEventBus().unregister(this);
@@ -111,9 +131,17 @@ public final class WESpread {
 		try {
 			long blocksPerTick = Long.parseLong(arg);
 			if (blocksPerTick < 0) { blocksPerTick = Long.MAX_VALUE; }
-			this.blocksPerTickMap.put(id, 100);
-			source.print(COMMAND_BPT_UPDATED);
-		} catch (final NumberFormatException exception) {
+			this.blocksPerTickMap.put(id, blocksPerTick);
+			configFileYAML.set("DefaultBlocksPerTick", blocksPerTick);
+			try {
+			    configFileYAML.save(configFile); 
+			}
+			catch (IOException error) {
+			    error.printStackTrace();
+			}
+			source.print(COMMAND_BPT_UPDATED.append(TextComponent.of(Utils.legacySerializerAnyCase("&e" + String.valueOf(blocksPerTick)))));
+		}
+		catch (final NumberFormatException exception) {
 			source.printError(INVALID_ARGUMENT);
 			source.print(COMMAND_USAGE);
 		}
@@ -127,7 +155,7 @@ public final class WESpread {
 
 		private SchedulingExtent(final Extent delegate, final UUID actor) {
 			super(delegate);
-			this.sorted = !WESpread.this.actorsWhosePlacementIsNotSorted.contains(actor);
+			this.sorted = ! WESpread.this.actorsWhosePlacementIsNotSorted.contains(actor);
 			this.blocksPerTick = () -> WESpread.this.blocksPerTickMap.getOrDefault(actor, WESpread.this.defaultBlocksPerTick);
 		}
 
@@ -157,7 +185,7 @@ public final class WESpread {
 
 				@Override
 				public Operation resume(final RunContext run) {
-					if (!this.started && it.hasNext()) {
+					if (! this.started && it.hasNext()) {
 						this.started = true;
 						WESpread.this.scheduler.runPeriodically(this::putBlock, 1L, 1L);
 					}
@@ -174,7 +202,7 @@ public final class WESpread {
 					} catch (final WorldEditException exception) {
 						throw new RuntimeException(exception);
 					} finally {
-						if (!it.hasNext()) { task.cancel(); }
+						if (! it.hasNext()) { task.cancel(); }
 					}
 				}
 
