@@ -4,7 +4,8 @@ A soft fork of [WETS](https://github.com/emilyy-dev/wets) maintained for [TrueOG
 
 **Changes:**
 
-- Changed API version to 1.19.4
+- Changed API version to 1.19.4.
+- Removed Fabric support.
 - Modified project structure to build with TrueOG's gradle configuration.
 - Messages are colored using MiniMessage.
 - Added a customizable prefix.
